@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMI X-Ray: see every EMI, card due and BNPL bill in one number</title>
+<meta name="description" content="EMI X-Ray shows every credit card due, BNPL bill and EMI in one number, and gives you an exact plan to clear high-interest debt first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0E16; --panel:#111827; --panel2:#0E1420; --line:#1F2A3C;
+  --text:#E8EDF5; --muted:#93A0B4; --accent:#6FF2CF; --accent-ink:#04251C;
+  --leak:#FF7A66; --gold:#F5C46B; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.15;letter-spacing:-.02em}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:10;background:rgba(10,14,22,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:Sora;font-weight:700;font-size:20px;display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo i{width:26px;height:26px;border-radius:8px;background:radial-gradient(circle at 35% 35%,var(--accent),#1C6B5A);box-shadow:0 0 18px rgba(111,242,207,.45)}
+nav .links{display:flex;gap:24px;align-items:center;font-size:14px;color:var(--muted)}
+nav .links a{text-decoration:none}
+nav .links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font:600 15px Inter;border-radius:999px;padding:13px 22px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 8px 30px rgba(111,242,207,.25)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 36px rgba(111,242,207,.35)}
+.btn-ghost{border:1px solid var(--line);color:var(--text);background:transparent}
+.btn-sm{padding:9px 16px;font-size:14px}
+.hero{padding:88px 0 64px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-200px -100px auto auto;width:640px;height:640px;background:radial-gradient(circle,rgba(111,242,207,.16),transparent 60%);pointer-events:none}
+.hero .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.eyebrow{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);background:rgba(111,242,207,.08);border:1px solid rgba(111,242,207,.25);padding:6px 12px;border-radius:999px;margin-bottom:20px}
+.hero h1{font-size:clamp(38px,5.4vw,60px);margin-bottom:20px}
+.hero h1 span{color:var(--accent)}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:540px;margin-bottom:30px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.statstrip{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap}
+.statstrip div b{display:block;font:700 24px Sora;color:var(--text)}
+.statstrip div span{font-size:13px;color:var(--muted)}
+.gauge{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.gauge .top{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.gauge .big{font:700 42px Sora;margin-bottom:4px}
+.gauge .sub{font-size:14px;color:var(--muted);margin-bottom:22px}
+.bar{height:12px;border-radius:99px;background:#1A2232;overflow:hidden;display:flex;margin-bottom:22px}
+.bar i{display:block;height:100%}
+.debtrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:14px}
+.debtrow .tag{font-size:12px;padding:3px 8px;border-radius:6px;background:#1A2232;color:var(--muted);margin-left:8px}
+.debtrow .hot{color:var(--leak);font-weight:600}
+section{padding:80px 0}
+.sec-head{max-width:640px;margin-bottom:44px}
+.sec-head .kicker{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.sec-head h2{font-size:clamp(28px,3.6vw,40px);margin-bottom:14px}
+.sec-head p{color:var(--muted);font-size:17px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+.card .num{font:700 30px Sora;color:var(--leak);margin-bottom:8px}
+.card h3{font-size:19px;margin-bottom:8px}
+.card p{color:var(--muted);font-size:15px}
+.card .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(111,242,207,.1);color:var(--accent);font:700 18px Sora;margin-bottom:16px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.step{padding:26px;border-left:2px solid var(--accent);background:linear-gradient(90deg,rgba(111,242,207,.06),transparent)}
+.step:before{counter-increment:s;content:"0" counter(s);font:700 14px Sora;color:var(--accent);display:block;margin-bottom:10px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{color:var(--muted);font-size:15px}
+.quote{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:40px;max-width:820px;margin:0 auto;position:relative}
+.quote:before{content:"\201C";position:absolute;top:-10px;left:28px;font:700 90px Sora;color:var(--accent);opacity:.35}
+.quote p{font-size:18px;white-space:pre-line}
+.quote .by{margin-top:18px;font-size:14px;color:var(--muted)}
+.price{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px}
+.price .card.pro{border-color:rgba(111,242,207,.45);box-shadow:0 0 0 1px rgba(111,242,207,.15) inset}
+.price .amt{font:700 36px Sora;margin:10px 0}
+.price .amt small{font:500 15px Inter;color:var(--muted)}
+.price ul{list-style:none;color:var(--muted);font-size:15px}
+.price li{padding:6px 0 6px 24px;position:relative}
+.price li:before{content:"";position:absolute;left:0;top:13px;width:12px;height:7px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+/* tool */
+.tool{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px}
+.panel h3{font-size:18px;margin-bottom:4px}
+.panel .hint{font-size:13px;color:var(--muted);margin-bottom:18px}
+.drow{display:grid;grid-template-columns:1.2fr 1fr .7fr 1fr 28px;gap:8px;margin-bottom:8px;align-items:end}
+.drow label,.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+input,select,textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font:14px Inter}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(111,242,207,.5);border-color:transparent}
+.rm{background:none;border:0;color:var(--muted);font-size:20px;cursor:pointer;height:40px}
+.field{margin-top:14px}
+.tool .actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.small{font-size:13px;color:var(--muted)}
+.result .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font:700 22px Sora}
+.kpi span{font-size:12px;color:var(--muted)}
+.kpi.bad b{color:var(--leak)} .kpi.good b{color:var(--accent)}
+.plan{white-space:pre-line;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:15px}
+.order{font-size:14px;color:var(--muted);margin:0 0 14px 18px}
+.err{color:var(--leak);font-size:14px;margin-top:10px}
+.empty{color:var(--muted);text-align:center;padding:60px 10px}
+.counter{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.counter div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.counter b{font:700 24px Sora;color:var(--accent);display:block}
+.counter span{font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.spin{width:16px;height:16px;border:2px solid var(--accent-ink);border-right-color:transparent;border-radius:50%;animation:r .7s linear infinite;display:none}
+.loading .spin{display:inline-block}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (max-width:860px){
+  .hero{padding:56px 0 40px}
+  .hero .grid,.tool{grid-template-columns:1fr}
+  .cards,.steps,.price{grid-template-columns:1fr}
+  nav .links a:not(.btn){display:none}
+  section{padding:56px 0}
+  .drow{grid-template-columns:1fr 1fr;}
+  .drow .rmcell{grid-column:2;justify-self:end}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#"><i></i>EMI X-Ray</a>
+    <div class="links">
+      <a href="#problem">Why</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a class="btn btn-primary btn-sm" href="#try">Get early access</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">For salaried 22 to 30s juggling cards, BNPL and EMIs</span>
+      <h1>See the interest your <span>EMIs are hiding.</span></h1>
+      <p class="lead">See every credit card due, BNPL bill and EMI in one number, and get an exact plan to clear your highest-interest debt first.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#try">Get early access</a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+      
+    </div>
+    <div class="gauge" aria-label="Example X-Ray">
+      <div class="top"><span>Example X-Ray</span><span>Before payday</span></div>
+      <div class="big">Rs 10,000</div>
+      <div class="sub">committed every month across 3 lines of credit</div>
+      <div class="bar"><i style="width:40%;background:var(--leak)"></i><i style="width:25%;background:var(--gold)"></i><i style="width:35%;background:var(--accent)"></i></div>
+      <div class="debtrow"><span>Credit card<span class="tag">42% a year</span></span><span class="hot">Attack first</span></div>
+      <div class="debtrow"><span>BNPL<span class="tag">24% a year</span></span><span>Minimum, then next</span></div>
+      <div class="debtrow"><span>Phone EMI<span class="tag">16% a year</span></span><span>Minimum</span></div>
+      <div class="debtrow"><span><b>Interest leak this month</b></span><span class="hot">Rs 3,633</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">The problem</div>
+      <h2>Your salary is spoken for before it lands.</h2>
+      <p>Three cards, two pay-later apps and a phone EMI, each with its own due date. Nobody shows you the total, or what it is costing you.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="num">~3.5%</div><h3>a month on revolving card balances</h3><p>Carry a card balance and the interest typically runs above 40% a year. Paying only the minimum due keeps it rolling for years.</p></div>
+      <div class="card"><div class="num">5+</div><h3>due dates to track</h3><p>Card dues, pay-later bills and EMIs land on different days, from different apps, so the real monthly commitment stays invisible.</p></div>
+      <div class="card"><div class="num">Rs ?</div><h3>the total you never see</h3><p>Expense trackers show what you spent. Few show what you already owe each month, ranked by what it costs you.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background:linear-gradient(180deg,transparent,rgba(17,24,39,.6),transparent)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">How it works</div>
+      <h2>One number. One order of attack.</h2>
+      <p>EMI X-Ray uses the debt avalanche method: pay the minimum everywhere, then put every spare rupee on your highest-interest debt.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>List what you owe</h3><p>Card balances, BNPL bills and EMIs, with the rate and minimum payment for each. No bank login needed.</p></div>
+      <div class="step"><h3>See the X-Ray</h3><p>Your total monthly commitment, the interest leaking out each month, and every debt ranked by cost.</p></div>
+      <div class="step"><h3>Follow the payoff plan</h3><p>An exact rupee allocation each month, with the interest and months you save compared with paying minimums only.</p></div>
+    </div>
+    <div class="cards" style="margin-top:22px">
+      <div class="card"><div class="ico">1</div><h3>Unified Obligation Gauge</h3><p>Every card due, BNPL bill and EMI in one number: what is already committed before payday.</p></div>
+      <div class="card"><div class="ico">%</div><h3>Interest Trap Shield</h3><p>Flags revolving card interest and the lines of credit that cost you the most each month.</p></div>
+      <div class="card"><div class="ico">&#8595;</div><h3>Avalanche Payoff Engine</h3><p>Calculates where each rupee should go, highest rate first, to minimise total interest.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="try"><div class="wrap"><div class="panel" style="text-align:center;padding:48px 26px">
+<div class="sec-head" style="margin:0 auto 18px"><div class="kicker">Coming this week</div><h2>Your free X-Ray is almost ready.</h2>
+<p>Enter what you owe, see your monthly interest leak and get a 3-step payoff plan in under a minute.</p></div>
+<a class="btn btn-primary" href="#pricing">See pricing</a></div></div></section>
+
+<section id="launch">
+  <div class="wrap">
+    <div class="sec-head" style="margin-left:auto;margin-right:auto;text-align:center">
+      <div class="kicker">From our launch post</div>
+    </div>
+    <div class="quote">
+      <p id="launchPost">You paid the Rs 6,000 minimum on your credit card. On time.
+Next month, the balance looks almost the same.
+
+Say you owe Rs 1.2 lakh on a card charging 3.5% a month.
+That&#x27;s about Rs 4,200 in interest.
+So only around Rs 1,800 of your payment actually reduces the debt.
+
+Now add a phone EMI, a &quot;no-cost&quot; laptop EMI and two pay-later bills.
+Every app shows its own number. None shows the total.
+
+EMI X-Ray puts it all in one place.
+No bank login. We don&#x27;t sell loans or recommend lenders.</p>
+      <div class="by">EMI X-Ray launch post on LinkedIn</div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Pricing</div>
+      <h2>Free to see. Rs 99 to stay on track.</h2>
+    </div>
+    <div class="price">
+      <div class="card">
+        <h3>X-Ray</h3>
+        <div class="amt">Free</div>
+        <ul><li>One-number obligation gauge</li><li>Monthly interest leak</li><li>Avalanche payoff plan</li></ul>
+      </div>
+      <div class="card pro">
+        <h3>Premium</h3>
+        <div class="amt">Rs 99 <small>/ month</small></div>
+        <ul><li>Everything in X-Ray</li><li>Due-date reminders across all cards and EMIs</li><li>Monthly payoff tracking against your plan</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b style="color:var(--text)">EMI X-Ray</b> &middot; prototype built for a course project at ISB.</span>
+    <span>EMI X-Ray is a calculator, not financial advice. It does not recommend lenders, loans or investments.</span>
+  </div>
+</footer>
+
+
+</body>
+</html>
