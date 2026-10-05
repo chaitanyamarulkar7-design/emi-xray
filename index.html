@@ -130,7 +130,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       <a href="#problem">Why</a>
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
-      <a class="btn btn-primary btn-sm" href="#try">Get early access</a>
+      <a class="btn btn-primary btn-sm" href="#try">Run free X-Ray</a>
     </div>
   </div>
 </nav>
@@ -142,10 +142,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       <h1>See the interest your <span>EMIs are hiding.</span></h1>
       <p class="lead">See every credit card due, BNPL bill and EMI in one number, and get an exact plan to clear your highest-interest debt first.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="#try">Get early access</a>
+        <a class="btn btn-primary" href="#try">Run my free X-Ray</a>
         <a class="btn btn-ghost" href="#how">How it works</a>
       </div>
-      
+      <!--LIVESTATS-START-->
+      <div class="statstrip" id="heroStats">
+        <div><b id="sPlans">0</b><span>X-Rays run</span></div>
+        <div><b id="sLeak">Rs 0</b><span>monthly interest leak uncovered</span></div>
+        <div><b id="sSaved">Rs 0</b><span>average interest saved per plan</span></div>
+      </div>
+      <!--LIVESTATS-END-->
     </div>
     <div class="gauge" aria-label="Example X-Ray">
       <div class="top"><span>Example X-Ray</span><span>Before payday</span></div>
@@ -195,12 +201,48 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   </div>
 </section>
 
+<!--FEATURE-START-->
+<section id="try">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Try it now</div>
+      <h2>Run your free X-Ray in 60 seconds.</h2>
+      <p>Enter what you owe. Our calculator does the maths; AI turns it into a 3-step plan. No login, no names, no account numbers.</p>
+    </div>
+    <div class="counter" id="liveCounter">
+      <div><b id="cPlans">0</b><span>X-Rays run so far</span></div>
+      <div><b id="cLeak">Rs 0</b><span>monthly interest leak uncovered</span></div>
+      <div><b id="cSaved">Rs 0</b><span>avg interest saved vs minimums only</span></div>
+    </div>
+    <div class="tool">
+      <form class="panel" id="xrayForm" autocomplete="off">
+        <h3>What do you owe?</h3>
+        <p class="hint">Rates are typical defaults. Edit them if you know yours. Up to 5 debts.</p>
+        <div id="debts"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="addDebt">+ Add a debt</button>
+        <div class="field">
+          <label for="budget">How much can you pay towards all debts each month? (Rs)</label>
+          <input id="budget" type="number" min="0" step="500" value="15000" required>
+        </div>
+        <div class="field">
+          <label for="note">Anything else? (optional, 200 characters)</label>
+          <textarea id="note" rows="2" maxlength="200" placeholder="e.g. I want to be debt-free before my wedding next year"></textarea>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="go" type="submit"><span class="spin"></span>Run my X-Ray</button>
+          <span class="small" id="tries"></span>
+        </div>
+        <div class="err" id="err"></div>
+      </form>
+      <div class="panel result" id="result">
+        <div class="empty">Your X-Ray will appear here.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--FEATURE-END-->
 
-
-<section id="try"><div class="wrap"><div class="panel" style="text-align:center;padding:48px 26px">
-<div class="sec-head" style="margin:0 auto 18px"><div class="kicker">Coming this week</div><h2>Your free X-Ray is almost ready.</h2>
-<p>Enter what you owe, see your monthly interest leak and get a 3-step payoff plan in under a minute.</p></div>
-<a class="btn btn-primary" href="#pricing">See pricing</a></div></div></section>
+<!--WAITLIST-PLACEHOLDER-->
 
 <section id="launch">
   <div class="wrap">
@@ -253,6 +295,77 @@ No bank login. We don&#x27;t sell loans or recommend lenders.</p>
   </div>
 </footer>
 
+<!--SCRIPT-START-->
+<script>
+const TYPES = {"Credit card":42, "BNPL":24, "Personal loan":14, "Consumer EMI":16};
+const inr = n => "Rs " + Math.round(n || 0).toLocaleString("en-IN");
+const debtsEl = document.getElementById("debts");
 
+function addRow(type="Credit card", balance="", minPay=""){
+  if (debtsEl.children.length >= 5) return;
+  const row = document.createElement("div");
+  row.className = "drow";
+  row.innerHTML = `
+    <div><label>Type</label><select class="t">${Object.keys(TYPES).map(k=>`<option ${k===type?"selected":""}>${k}</option>`).join("")}</select></div>
+    <div><label>Outstanding (Rs)</label><input class="b" type="number" min="0" step="500" value="${balance}" required></div>
+    <div><label>Rate % / yr</label><input class="r" type="number" min="0" max="60" step="0.5" value="${TYPES[type]}"></div>
+    <div><label>Min / EMI (Rs)</label><input class="m" type="number" min="0" step="100" value="${minPay}" required></div>
+    <div class="rmcell"><button type="button" class="rm" aria-label="Remove">&times;</button></div>`;
+  row.querySelector(".t").addEventListener("change", e => row.querySelector(".r").value = TYPES[e.target.value]);
+  row.querySelector(".rm").addEventListener("click", () => { if (debtsEl.children.length > 1) row.remove(); });
+  debtsEl.appendChild(row);
+}
+addRow("Credit card", 80000, 4000);
+addRow("BNPL", 15000, 2500);
+addRow("Consumer EMI", 40000, 3500);
+document.getElementById("addDebt").onclick = () => addRow();
+
+async function loadStats(){
+  try{
+    const s = await (await fetch("/api/stats", {cache:"no-store"})).json();
+    for (const [id,v] of [["Plans",s.plans],["Leak",s.interestUncovered],["Saved",s.avgSaved]]){
+      const txt = id==="Plans" ? (v||0).toLocaleString("en-IN") : inr(v);
+      ["s","c"].forEach(p => { const el = document.getElementById(p+id); if (el) el.textContent = txt; });
+    }
+  }catch(e){}
+}
+loadStats();
+
+function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e; }
+
+document.getElementById("xrayForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const go = document.getElementById("go"), err = document.getElementById("err"), out = document.getElementById("result");
+  err.textContent = "";
+  const debts = [...debtsEl.children].map(r => ({
+    type: r.querySelector(".t").value, balance: +r.querySelector(".b").value,
+    rate: +r.querySelector(".r").value, minPay: +r.querySelector(".m").value }));
+  const body = { debts, budget: +document.getElementById("budget").value, note: document.getElementById("note").value };
+  go.classList.add("loading"); go.disabled = true;
+  try{
+    const res = await fetch("/api/xray", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+    const j = await res.json();
+    if (!res.ok) { err.textContent = j.error || "Something went wrong."; return; }
+    const f = j.facts;
+    out.innerHTML = "";
+    out.appendChild(el("h3", "", "Your X-Ray"));
+    out.appendChild(el("p", "hint", "Calculated by our code. Plan written by AI from these numbers."));
+    const k = el("div","kpis");
+    const kpi = (cls,val,lab) => { const d=el("div","kpi "+cls); d.appendChild(el("b","",val)); d.appendChild(el("span","",lab)); k.appendChild(d); };
+    kpi("bad", inr(f.monthly_interest_leak), "interest leaking out this month");
+    kpi("", inr(f.total_minimum_payments), "committed before payday (minimums)");
+    kpi("good", f.avalanche.months_to_debt_free ? f.avalanche.months_to_debt_free + " months" : "Over 50 years", "to debt-free with this plan");
+    kpi("good", f.interest_saved_vs_minimum_only != null ? inr(f.interest_saved_vs_minimum_only) : "n/a", "interest saved vs paying minimums only");
+    out.appendChild(k);
+    out.appendChild(el("p","small","Order of attack:"));
+    const ol = el("ol","order"); f.attack_order.forEach(t => ol.appendChild(el("li","",t))); out.appendChild(ol);
+    out.appendChild(el("div","plan", j.plan));
+    document.getElementById("tries").textContent = j.triesLeft > 0 ? `${j.triesLeft} free X-Rays left` : "That was your last free X-Ray";
+    loadStats();
+  }catch(ex){ err.textContent = "Network error. Please try again."; }
+  finally{ go.classList.remove("loading"); go.disabled = false; }
+});
+</script>
+<!--SCRIPT-END-->
 </body>
 </html>
